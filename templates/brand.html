@@ -1,0 +1,428 @@
+<!-- templates/brand.html
+  ORV (오르브) - Brand Page
+  ✔ 메뉴: 브랜드 / 상품 / 리추얼 / 매거진 / contact
+  ✔ 이 페이지(브랜드)에는: ORV 탄생 배경 + 철학(어떻게 이어졌는지) + 핵심 키워드/약속
+  ✔ Flask에서 render_template("brand.html")로 연결해서 사용
+
+  (권장) app.py 라우팅 예시
+  @app.route("/brand")
+  def brand():
+      return render_template("brand.html")
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>ORV | 브랜드 — ORV의 탄생과 철학</title>
+
+  <style>
+    :root{
+      --bg: #f4f0ea;
+      --paper: #fbfaf8;
+      --ink: #1f2422;
+      --muted:#6b6f6a;
+      --line: rgba(31,36,34,.12);
+      --accent:#2f5b50;
+      --accent2:#9bb3a7;
+      --shadow: 0 18px 50px rgba(31,36,34,.10);
+      --radius: 18px;
+      --max: 1120px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      color:var(--ink);
+      background: radial-gradient(900px 600px at 20% 0%, rgba(155,179,167,.22), transparent 60%),
+                  radial-gradient(900px 600px at 80% 10%, rgba(47,91,80,.12), transparent 55%),
+                  linear-gradient(180deg, var(--bg), #ffffff);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
+      line-height:1.7;
+      letter-spacing:-.1px;
+    }
+    .serif{ font-family: ui-serif, Georgia, "Times New Roman", Times, serif; letter-spacing:-.2px; }
+    a{ color:inherit; text-decoration:none; }
+    .container{ width:min(var(--max), calc(100% - 40px)); margin:0 auto; }
+
+    /* Header */
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+      background: rgba(244,240,234,.72);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 14px 0;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      font-weight:800;
+      letter-spacing:.8px;
+      text-transform: uppercase;
+    }
+    .brandMark{
+      width:34px; height:34px;
+      border-radius: 12px;
+      background: conic-gradient(from 180deg, var(--accent), var(--accent2), #e7efe9, var(--accent));
+      box-shadow: 0 14px 28px rgba(47,91,80,.20);
+    }
+    .brand small{
+      display:block;
+      font-weight:600;
+      color:var(--muted);
+      letter-spacing:0;
+      text-transform:none;
+      margin-top:-3px;
+    }
+    nav ul{
+      list-style:none; padding:0; margin:0;
+      display:flex; gap:18px;
+      align-items:center;
+      color:var(--muted);
+      font-weight:650;
+      font-size: 14px;
+    }
+    nav a{ padding: 8px 6px; border-radius: 10px; }
+    nav a:hover{ color:var(--ink); background: rgba(255,255,255,.35); }
+    .active{
+      color: var(--ink) !important;
+      background: rgba(255,255,255,.45);
+      border: 1px solid var(--line);
+    }
+
+    .navRight{ display:flex; align-items:center; gap:10px; }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.65);
+      font-weight:700;
+      font-size:14px;
+      gap:8px;
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+      cursor:pointer;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.85);
+      box-shadow: 0 10px 20px rgba(31,36,34,.08);
+    }
+    .btn.primary{
+      border-color: transparent;
+      color:#fff;
+      background: linear-gradient(135deg, var(--accent), #24483f);
+      box-shadow: 0 16px 30px rgba(47,91,80,.22);
+    }
+
+    /* Mobile */
+    .menuBtn{ display:none; width:42px; height:42px; border-radius:12px; border:1px solid var(--line); background:rgba(255,255,255,.55); }
+    .menuBtn svg{ width:22px; height:22px; }
+    .mobilePanel{
+      display:none;
+      border-top: 1px solid var(--line);
+      background: rgba(244,240,234,.86);
+      padding: 12px 0 16px;
+    }
+    .mobilePanel a{
+      display:block;
+      padding: 12px 0;
+      color: var(--muted);
+      font-weight:700;
+    }
+
+    /* Page */
+    main{ padding: 26px 0 44px; }
+    .pageHead{
+      padding: 18px 0 10px;
+    }
+    .kicker{
+      color: var(--muted);
+      font-weight:800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+    h1{
+      margin: 10px 0 10px;
+      font-size: clamp(28px, 3.2vw, 44px);
+      line-height:1.15;
+    }
+    .lead{
+      margin:0;
+      color: var(--muted);
+      max-width: 70ch;
+      font-size: 15px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.08fr .92fr;
+      gap: 16px;
+      margin-top: 18px;
+      align-items:start;
+    }
+    .panel{
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: rgba(251,250,248,.82);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .pad{ padding: 22px; }
+    .divider{ height:1px; background: var(--line); margin: 16px 0; }
+
+    .prose{
+      color: var(--muted);
+      font-size: 14.5px;
+      margin:0;
+    }
+    .quote{
+      margin: 0;
+      padding: 18px;
+      border-left: 3px solid rgba(47,91,80,.35);
+      background: rgba(255,255,255,.35);
+      border-radius: 14px;
+      color: var(--ink);
+    }
+
+    .list{
+      display:grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .item{
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.55);
+      padding: 14px;
+    }
+    .meta{
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .item h3{ margin:0 0 6px; font-size: 16px; }
+    .item p{ margin:0; color: var(--muted); font-size: 14px; }
+
+    /* Visual block */
+    .visual{
+      min-height: 520px;
+      background: #ddd;
+      border-bottom: 1px solid var(--line);
+    }
+    .visual img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+      filter: saturate(.92) contrast(.98);
+    }
+
+    footer{
+      border-top: 1px solid var(--line);
+      padding: 26px 0 36px;
+      color: var(--muted);
+      background: rgba(251,250,248,.25);
+      margin-top: 18px;
+    }
+    .footRow{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footLinks{ display:flex; gap: 12px; flex-wrap: wrap; font-size: 13px; }
+    .footLinks a:hover{ color: var(--ink); }
+
+    @media (max-width: 980px){
+      nav ul{ display:none; }
+      .menuBtn{ display:inline-grid; place-items:center; }
+      .grid{ grid-template-columns: 1fr; }
+      .visual{ min-height: 320px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/" aria-label="ORV Home">
+        <span class="brandMark" aria-hidden="true"></span>
+        <span>
+          ORV
+          <small>오르브 · breathe & rest</small>
+        </span>
+      </a>
+
+      <nav aria-label="Main navigation">
+        <ul>
+          <li><a class="active" href="/brand">브랜드</a></li>
+          <li><a href="/products">상품</a></li>
+          <li><a href="/ritual">리추얼</a></li>
+          <li><a href="/magazine">매거진</a></li>
+          <li><a href="/contact">contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="navRight">
+        <a class="btn" href="/products">상품 보기</a>
+        <a class="btn primary" href="/ritual">3분 리추얼</a>
+
+        <button class="menuBtn" type="button" aria-label="모바일 메뉴" onclick="toggleMobileMenu()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div id="mobilePanel" class="mobilePanel">
+      <div class="container">
+        <a href="/brand" onclick="toggleMobileMenu(false)">브랜드</a>
+        <a href="/products" onclick="toggleMobileMenu(false)">상품</a>
+        <a href="/ritual" onclick="toggleMobileMenu(false)">리추얼</a>
+        <a href="/magazine" onclick="toggleMobileMenu(false)">매거진</a>
+        <a href="/contact" onclick="toggleMobileMenu(false)">contact</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="pageHead">
+      <div class="kicker">BRAND STORY</div>
+      <h1 class="serif">ORV의 탄생과 철학</h1>
+      <p class="lead">
+        ORV는 “쉬고 있는데도 쉬지 못하는 느낌”에서 시작했습니다.
+        우리가 잃어버린 감각(숨, 물, 향)을 다시 연결하는 방식으로,
+        매일 반복 가능한 회복을 설계합니다.
+      </p>
+    </div>
+
+    <div class="grid">
+      <!-- Left: Story (탄생 배경 → 철학으로 이어짐) -->
+      <section class="panel" aria-label="ORV Story">
+        <div class="visual">
+          <!-- 원하면 이 이미지도 내가 ORV 무드로 만들어줄게 -->
+          <img src="../static/brand1.jpg" alt="ORV brand mood image"
+               onerror="this.style.display='none'; this.parentElement.style.background='#d9d3ca';">
+        </div>
+        <div class="pad">
+          <h2 class="serif" style="margin:0 0 10px;">탄생 배경</h2>
+          <p class="prose">
+            어떤 날은 충분히 잠을 잤는데도 피곤하고, 쉬는 시간에도 마음이 계속 바쁘죠.
+            ORV 팀은 그 이유가 “휴식의 부족”보다 “감각의 단절”에 있다는 생각에 닿았습니다.
+            하루 종일 정보와 일정에 쫓기며 살다 보면, 숨의 길이·물의 온도·향의 결 같은 기본 감각은 뒤로 밀려납니다.
+            <br><br>
+            그래서 ORV는 ‘완벽한 휴식’이 아니라, <b style="color:var(--ink);">완전히 가능하고 아주 작은 회복</b>을 만들기로 했습니다.
+            어떤 날에도 할 수 있는 루틴, 그 루틴이 쌓이는 구조를요.
+          </p>
+
+          <div class="divider"></div>
+
+          <h2 class="serif" style="margin:0 0 10px;">탄생이 철학이 되기까지</h2>
+          <p class="prose">
+            ORV가 정한 출발점은 단순합니다: <b style="color:var(--ink);">향, 물, 호흡</b>.
+            가장 가까운 요소들로 감각을 다시 열면, 몸이 먼저 조용해지고 마음이 따라옵니다.
+            <br><br>
+            그래서 ORV는 ‘강한 자극’ 대신 ‘은은한 잔향’을 지향합니다.
+            바스 타임이 있는 날에는 바스 솔트·버블바로, 시간이 없을 때는 샤워 스티머·룸 스프레이로,
+            잠들기 전에는 필로우 샤쉐·아이워머로—쉼의 결을 일상 곳곳에 놓아둡니다.
+          </p>
+
+          <div style="margin-top:14px;">
+            <blockquote class="quote serif">
+              “회복은 대단한 목표가 아니라, 오늘의 감각을 다시 여는 일.”
+            </blockquote>
+          </div>
+
+          <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+            <a class="btn primary" href="/products">ORV 상품 보기</a>
+            <a class="btn" href="/ritual">3분 호흡 리추얼</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Pillars / Values -->
+      <aside class="panel" aria-label="ORV Philosophy">
+        <div class="pad">
+          <div class="kicker" style="margin-bottom:8px;">PHILOSOPHY</div>
+          <h2 class="serif" style="margin:0 0 8px;">ORV의 철학은 ‘작고 반복 가능한 회복’</h2>
+          <p class="prose">
+            거창한 결심 대신, 오늘 바로 가능한 한 가지.
+            ORV는 습관이 될 수 있는 ‘작은 리추얼’을 제안합니다.
+          </p>
+
+          <div class="list">
+            <div class="item">
+              <div class="meta">01 / BREvITY</div>
+              <h3 class="serif">짧아도 충분한 루틴</h3>
+              <p>3분이면 좋아요. 중요한 건 ‘지속 가능성’입니다.</p>
+            </div>
+            <div class="item">
+              <div class="meta">02 / BALANCE</div>
+              <h3 class="serif">자극보다 균형</h3>
+              <p>향은 강함이 아니라 ‘좋은 잔향’으로 기억되도록.</p>
+            </div>
+            <div class="item">
+              <div class="meta">03 / CARE</div>
+              <h3 class="serif">감각을 다정하게</h3>
+              <p>피부, 호흡, 공간—가장 가까운 곳부터 돌봅니다.</p>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <h3 class="serif" style="margin:0 0 8px;">ORV가 약속하는 경험</h3>
+          <p class="prose" style="margin:0;">
+            ① 사용이 쉽고 ② 분위기를 해치지 않고 ③ 다음 날까지 잔잔하게 남는 것.
+            ORV의 모든 제품과 콘텐츠는 이 세 가지 기준에서 출발합니다.
+          </p>
+
+          <div style="margin-top:14px;">
+            <a class="btn" href="/magazine">ORV 매거진 읽기</a>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer>
+      <div class="footRow">
+        <div class="brand" style="gap:10px;">
+          <span class="brandMark" aria-hidden="true"></span>
+          <span>ORV <small>오르브 · breathe & rest</small></span>
+        </div>
+
+        <div class="footLinks">
+          <a href="/brand">브랜드</a>
+          <a href="/products">상품</a>
+          <a href="/ritual">리추얼</a>
+          <a href="/magazine">매거진</a>
+          <a href="/contact">contact</a>
+        </div>
+
+        <div style="font-size:12px;">© ORV. All rights reserved.</div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    function toggleMobileMenu(force){
+      const panel = document.getElementById('mobilePanel');
+      const isOpen = panel.style.display === 'block';
+      const next = (typeof force === 'boolean') ? force : !isOpen;
+      panel.style.display = next ? 'block' : 'none';
+    }
+  </script>
+</body>
+</html>

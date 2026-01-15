@@ -1,0 +1,996 @@
+<!-- templates/index.html
+  ORV (오르브) - Landing Page
+  ✔ 메뉴: 브랜드 / 상품 / 리추얼 / 매거진 / contact
+  ✔ 메인 섹션: 3분 호흡 리추얼 + ORV의 철학 + 베스트셀러 + 최신 매거진 소식(1개)
+  ✔ 각 메뉴 섹션 내용 포함(브랜드 상세/상품 라인업/리추얼 상세/매거진 글/컨택트 아이콘)
+
+  ⚠️ 이미지 준비 안내(원하면 내가 이미지도 만들어줄게):
+  /static/images/orv-hero.jpg
+  /static/images/orv-ritual.jpg
+  /static/images/orv-best-1.jpg
+  /static/images/orv-best-2.jpg
+  /static/images/orv-best-3.jpg
+  /static/images/orv-mag.jpg
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>ORV | 오르브 — breathe & rest</title>
+
+  <style>
+    :root{
+      --bg: #f4f0ea;         /* 따뜻한 베이지 */
+      --paper: #fbfaf8;      /* 밝은 종이색 */
+      --ink: #1f2422;        /* 먹색 */
+      --muted:#6b6f6a;       /* 회색 텍스트 */
+      --line: rgba(31,36,34,.12);
+      --accent:#2f5b50;      /* 그린 */
+      --accent2:#9bb3a7;     /* 연그린 */
+      --shadow: 0 18px 50px rgba(31,36,34,.10);
+      --radius: 18px;
+      --max: 1120px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      color:var(--ink);
+      background: radial-gradient(900px 600px at 20% 0%, rgba(155,179,167,.22), transparent 60%),
+                  radial-gradient(900px 600px at 80% 10%, rgba(47,91,80,.12), transparent 55%),
+                  linear-gradient(180deg, var(--bg), #ffffff);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
+      line-height:1.65;
+      letter-spacing:-.1px;
+    }
+
+    /* 세리프 느낌(레퍼런스 무드용) */
+    .serif{
+      font-family: ui-serif, Georgia, "Times New Roman", Times, serif;
+      letter-spacing: -.2px;
+    }
+
+    a{ color:inherit; text-decoration:none; }
+    .container{ width:min(var(--max), calc(100% - 40px)); margin:0 auto; }
+
+    /* Header */
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+      background: rgba(244,240,234,.72);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 14px 0;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      font-weight:800;
+      letter-spacing:.8px;
+      text-transform: uppercase;
+    }
+    .brandMark{
+      width:34px; height:34px;
+      border-radius: 12px;
+      background: conic-gradient(from 180deg, var(--accent), var(--accent2), #e7efe9, var(--accent));
+      box-shadow: 0 14px 28px rgba(47,91,80,.20);
+    }
+    .brand small{
+      display:block;
+      font-weight:600;
+      color:var(--muted);
+      letter-spacing:0;
+      text-transform:none;
+      margin-top:-3px;
+    }
+    nav ul{
+      list-style:none; padding:0; margin:0;
+      display:flex; gap:18px;
+      align-items:center;
+      color:var(--muted);
+      font-weight:650;
+      font-size: 14px;
+    }
+    nav a{ padding: 8px 6px; border-radius: 10px; }
+    nav a:hover{ color:var(--ink); background: rgba(255,255,255,.35); }
+
+    .navRight{
+      display:flex; align-items:center; gap:10px;
+    }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.65);
+      font-weight:700;
+      font-size:14px;
+      gap:8px;
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+      cursor:pointer;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.85);
+      box-shadow: 0 10px 20px rgba(31,36,34,.08);
+    }
+    .btn.primary{
+      border-color: transparent;
+      color:#fff;
+      background: linear-gradient(135deg, var(--accent), #24483f);
+      box-shadow: 0 16px 30px rgba(47,91,80,.22);
+    }
+
+    /* Mobile menu */
+    .menuBtn{
+      display:none;
+      width:42px; height:42px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.55);
+    }
+    .menuBtn svg{ width:22px; height:22px; }
+    .mobilePanel{
+      display:none;
+      border-top: 1px solid var(--line);
+      background: rgba(244,240,234,.86);
+      padding: 12px 0 16px;
+    }
+    .mobilePanel a{
+      display:block;
+      padding: 12px 0;
+      color: var(--muted);
+      font-weight:700;
+    }
+    .mobilePanel a:hover{ color:var(--ink); }
+
+    /* Hero */
+    .hero{
+      padding: 22px 0 10px;
+    }
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .heroLeft{
+      border-radius: var(--radius);
+      overflow:hidden;
+      min-height: 440px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+      background: #ddd;
+      position:relative;
+    }
+    .heroLeft img{
+      width:100%; height:100%;
+      object-fit: cover;
+      display:block;
+      filter: saturate(.92) contrast(.98);
+    }
+    .heroRight{
+      border-radius: var(--radius);
+      background: rgba(251,250,248,.75);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      padding: 34px 28px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap: 14px;
+    }
+    .heroKicker{
+      color: var(--muted);
+      font-weight:800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+    h1{
+      margin:0;
+      font-size: clamp(28px, 3.2vw, 44px);
+      line-height:1.12;
+    }
+    .lead{
+      margin:0;
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 54ch;
+    }
+    .heroCtas{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top: 6px;
+    }
+    .heroNote{
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    /* Sections */
+    section{ padding: 34px 0; }
+    .sectionHead{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:16px;
+      margin-bottom: 14px;
+    }
+    .sectionHead h2{
+      margin:0;
+      font-size: 22px;
+    }
+    .sectionHead p{
+      margin:0;
+      color:var(--muted);
+      font-size: 14px;
+      max-width: 70ch;
+    }
+
+    /* Ritual block (메인) */
+    .ritualMain{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .panel{
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: rgba(251,250,248,.80);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .panelPad{ padding: 22px; }
+    .ritualDiagram{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin: 14px 0 10px;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.55);
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .chip b{ color: var(--ink); }
+    .divider{ height:1px; background: var(--line); margin: 14px 0; }
+
+    .media{
+      width:100%; height:100%;
+      min-height: 320px;
+      background:#ddd;
+    }
+    .media img{
+      width:100%; height:100%;
+      object-fit: cover;
+      display:block;
+      filter: saturate(.92) contrast(.98);
+    }
+
+    /* Philosophy + Bestseller + Magazine (메인) */
+    .grid3{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .card{
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: rgba(251,250,248,.82);
+      box-shadow: 0 14px 34px rgba(31,36,34,.07);
+      overflow:hidden;
+    }
+    .cardPad{ padding: 16px; }
+    .card h3{ margin:0 0 6px; font-size: 16px; }
+    .card p{ margin:0; color: var(--muted); font-size: 14px; }
+    .thumb{
+      height: 160px;
+      background: radial-gradient(140px 90px at 20% 35%, rgba(155,179,167,.55), transparent 60%),
+                  radial-gradient(160px 110px at 80% 35%, rgba(47,91,80,.18), transparent 55%),
+                  linear-gradient(180deg, rgba(244,240,234,1), rgba(251,250,248,1));
+      border-bottom: 1px solid var(--line);
+    }
+    .thumb img{
+      width:100%; height:100%;
+      object-fit: cover;
+      display:block;
+      filter: saturate(.92) contrast(.98);
+    }
+    .priceRow{
+      display:flex; justify-content:space-between; align-items:center;
+      margin-top: 10px;
+      gap:10px;
+    }
+    .price{
+      font-weight: 900;
+      letter-spacing:-.2px;
+    }
+    .miniLink{
+      font-weight:800;
+      font-size: 13px;
+      color: var(--accent);
+    }
+    .miniLink:hover{ text-decoration: underline; }
+
+    /* Brand page section (상세) */
+    .brandStory{
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 18px;
+      align-items:start;
+    }
+    .prose{
+      color: var(--muted);
+      font-size: 14.5px;
+    }
+    .quote{
+      margin: 0;
+      padding: 18px;
+      border-left: 3px solid rgba(47,91,80,.35);
+      background: rgba(255,255,255,.35);
+      border-radius: 14px;
+      color: var(--ink);
+    }
+
+    /* Products section */
+    .productGrid{
+      display:grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+    }
+    .pItem{
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.50);
+      padding: 12px 10px;
+      text-align:center;
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    /* Magazine */
+    .magGrid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 14px;
+    }
+    .magList{
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
+    .post{
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.52);
+      padding: 14px;
+    }
+    .post .meta{
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .post h4{ margin: 8px 0 6px; font-size: 16px; }
+    .post p{ margin:0; color: var(--muted); font-size: 14px; }
+
+    /* Contact */
+    .contactGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+    .contactRow{
+      display:flex;
+      align-items:center;
+      gap: 12px;
+      padding: 12px 12px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.55);
+    }
+    .icon{
+      width: 38px; height: 38px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(251,250,248,.9);
+      display:grid;
+      place-items:center;
+    }
+    .icon svg{ width:18px; height:18px; }
+    .contactRow b{ display:block; }
+    .contactRow span{ color: var(--muted); font-size: 13px; }
+
+    footer{
+      border-top: 1px solid var(--line);
+      padding: 26px 0 36px;
+      color: var(--muted);
+      background: rgba(251,250,248,.25);
+    }
+    .footRow{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footLinks{
+      display:flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 13px;
+    }
+    .footLinks a:hover{ color: var(--ink); }
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .heroGrid{ grid-template-columns: 1fr; }
+      .ritualMain{ grid-template-columns: 1fr; }
+      .brandStory{ grid-template-columns: 1fr; }
+      .grid3{ grid-template-columns: 1fr; }
+      .magGrid{ grid-template-columns: 1fr; }
+      .contactGrid{ grid-template-columns: 1fr; }
+      nav ul{ display:none; }
+      .menuBtn{ display:inline-grid; place-items:center; }
+      .productGrid{ grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#top" aria-label="ORV Home">
+        <span class="brandMark" aria-hidden="true"></span>
+        <span>
+          ORV
+          <small>오르브 · breathe & rest</small>
+        </span>
+      </a>
+
+      <nav aria-label="Main navigation">
+        <ul>
+          <li><a href="/brand">브랜드</a></li>
+          <li><a href="#products">상품</a></li>
+          <li><a href="#ritual">리추얼</a></li>
+          <li><a href="#magazine">매거진</a></li>
+          <li><a href="#contact">contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="navRight">
+        <a class="btn" href="#products">상품 보기</a>
+        <a class="btn primary" href="#ritual">3분 리추얼</a>
+
+        <button class="menuBtn" type="button" aria-label="모바일 메뉴" onclick="toggleMobileMenu()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div id="mobilePanel" class="mobilePanel">
+      <div class="container">
+        <a href="/brand" onclick="toggleMobileMenu(false)">브랜드</a>
+        <a href="#products" onclick="toggleMobileMenu(false)">상품</a>
+        <a href="#ritual" onclick="toggleMobileMenu(false)">리추얼</a>
+        <a href="#magazine" onclick="toggleMobileMenu(false)">매거진</a>
+        <a href="#contact" onclick="toggleMobileMenu(false)">contact</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero (무드: 레퍼런스처럼 이미지 + 여백 + 세리프) -->
+  <main id="top" class="container">
+    <section class="hero">
+      <div class="heroGrid">
+        <div class="heroLeft">
+          <!-- 이미지 파일을 static에 넣으면 바로 표시됨 -->
+          <img src="../static/hero3.jpg" alt="ORV mood image (hero)" onerror="this.style.display='none'; this.parentElement.style.background='#d9d3ca';">
+        </div>
+
+        <div class="heroRight">
+          <div class="heroKicker">ORV / REST / BREATH</div>
+          <h1 class="serif">바쁜 하루의 끝에,<br>한 번의 호흡으로 시작되는 쉼.</h1>
+          <p class="lead">
+            ORV(오르브)는 “회복”을 거창한 목표가 아닌,
+            매일 반복 가능한 작은 루틴으로 제안합니다.
+            향과 물, 그리고 숨이 만나는 순간—몸과 마음이 동시에 가벼워지도록.
+          </p>
+
+          <div class="heroCtas">
+            <a class="btn primary" href="#products">베스트셀러 보기</a>
+            <a class="btn" href="#magazine">최신 매거진</a>
+          </div>
+
+          <div class="heroNote">
+            ※ Flask 템플릿용 정적 페이지 예시입니다. (원하면 Jinja 변수/반복문으로도 바꿔줄게요.)
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 메인: 3분 호흡 리추얼 -->
+    <section id="ritual">
+      <div class="sectionHead">
+        <div>
+          <h2 class="serif">3분 호흡 리추얼</h2>
+          <p>오늘의 리추얼은 “감각을 되찾는 3분”입니다. 따뜻한 물, 은은한 향, 그리고 규칙적인 호흡.</p>
+        </div>
+      </div>
+
+      <div class="ritualMain">
+        <div class="panel">
+          <div class="panelPad">
+            <div class="chip"><b>4초</b> 들이마시기</div>
+            <div class="chip"><b>2초</b> 멈추기</div>
+            <div class="chip"><b>6초</b> 내쉬기</div>
+
+            <div class="divider"></div>
+
+            <p class="prose" style="margin:0;">
+              욕실의 조명을 한 톤 낮추고, 물 온도를 “따뜻하다”로 맞춰보세요.
+              손을 물에 적신 뒤, 향을 가까이 두고 4-2-6 호흡을 3번 반복합니다.
+              호흡이 길어질수록, 몸의 긴장도 함께 풀립니다.
+              <br><br>
+              <b style="color:var(--ink);">Tip.</b> 처음엔 4-2-6이 어렵다면 “3-1-4”로 시작해도 좋아요.
+            </p>
+
+            <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+              <a class="btn primary" href="#products">리추얼 추천 제품 보기</a>
+              <a class="btn" href="#magazine">리추얼 에세이 읽기</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="media">
+            <img src="../static/breathe.jpg" alt="Ritual mood image" onerror="this.style.display='none'; this.parentElement.style.background='#d8d1c6';">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 메인: 베스트셀러 -->
+    <section aria-label="Best sellers">
+      <div class="sectionHead">
+        <div>
+          <h2 class="serif">베스트셀러</h2>
+          <p>ORV의 가장 사랑받는 제품들. ‘강한 향’보다 ‘좋은 잔향’을 지향합니다.</p>
+        </div>
+        <a class="btn" href="#products">전체 상품 보기</a>
+      </div>
+
+      <div class="grid3">
+        <article class="card">
+          <div class="thumb">
+            <img src="../static/bathsalt.jpg" alt="">
+          </div>
+          <div class="cardPad">
+            <h3 class="serif">Calm Sea 바스 솔트</h3>
+            <p>미네랄의 포근함으로 하루를 정리하는 시간.</p>
+            <div class="priceRow">
+              <div class="price">₩ 18,000</div>
+              <a class="miniLink" href="#products">자세히 →</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="thumb">
+            <img src="../static/oil.png" alt="Breath Drop Aroma Oil" onerror="this.style.display='none'">
+          </div>
+          <div class="cardPad">
+            <h3 class="serif">Breath Drop 아로마 오일</h3>
+            <p>한 방울의 호흡. 공간의 결을 부드럽게 바꿉니다.</p>
+            <div class="priceRow">
+              <div class="price">₩ 24,000</div>
+              <a class="miniLink" href="#products">자세히 →</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="thumb">
+            <img src="../static/bar.jpg" alt="Soft Cloud Bubble Bar" onerror="this.style.display='none'">        </div>
+          <div class="cardPad">
+            <h3 class="serif">Soft Cloud 버블바</h3>
+            <p>부드러운 거품으로 감각을 깨우는 쉼.</p>
+            <div class="priceRow">
+              <div class="price">₩ 15,000</div>
+              <a class="miniLink" href="#products">자세히 →</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 메인: ORV의 철학(요약) + 최신 매거진(1개) -->
+    <section aria-label="Philosophy and latest magazine">
+      <div class="grid3">
+        <article class="card">
+          <div class="cardPad">
+            <h3 class="serif">ORV의 철학</h3>
+            <p>
+              ORV는 “회복은 감각에서 시작된다”는 믿음에서 출발했습니다.
+              향, 물, 호흡이라는 가장 기본적인 요소로,
+              하루를 다시 ‘가벼운 리듬’으로 돌려놓는 브랜드.
+            </p>
+            <div style="margin-top:10px;">
+              <a class="miniLink" href="#brand">브랜드 스토리 읽기 →</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="thumb">
+            <img src="../static/rest2.jpg" alt="Latest magazine thumbnail" onerror="this.style.display='none'">
+          </div>
+          <div class="cardPad">
+            <h3 class="serif">최신 매거진 소식</h3>
+            <p>
+              <b style="color:var(--ink);">“한 번의 쉼이 가져오는 변화”</b><br>
+              바쁜 일정 속에서도 ‘나로 돌아오는 3분’을 만드는 방법을 기록했습니다.
+            </p>
+            <div style="margin-top:10px;">
+              <a class="miniLink" href="#magazine">원문 보기 →</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="cardPad">
+            <h3 class="serif">오늘의 리추얼 제안</h3>
+            <p>
+              샤워 스티머를 물줄기 옆에 두고,
+              아이워머로 시선을 내려놓는 7분.
+              “몸이 조용해지면, 마음도 따라옵니다.”
+            </p>
+            <div style="margin-top:10px;">
+              <a class="miniLink" href="#products">추천 조합 보기 →</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 브랜드(상세) -->
+    <section id="brand" aria-label="Brand">
+      <div class="sectionHead">
+        <div>
+          <h2 class="serif">브랜드</h2>
+          <p>ORV의 탄생 배경과 철학. “쉼이 필요한 순간을 더 다정하게 설계하는 일.”</p>
+        </div>
+      </div>
+
+      <div class="brandStory">
+        <div class="panel">
+          <div class="panelPad">
+            <h3 class="serif" style="margin:0 0 10px;">ORV의 탄생</h3>
+            <p class="prose" style="margin:0;">
+              ORV는 어느 날, ‘쉬고 있는데도 쉬지 못하는 느낌’에서 시작되었습니다.
+              휴식을 취하려고 앉았지만 머릿속은 내일의 일정으로 가득했고,
+              몸은 긴장을 풀 줄 몰랐어요.
+              <br><br>
+              우리는 그 원인이 “휴식의 방식”이 아니라 “감각의 단절”에 있다고 보았습니다.
+              하루 동안 쌓인 긴장과 정보의 소음 속에서,
+              손끝·호흡·후각 같은 기본 감각은 뒤로 밀려나기 쉽습니다.
+              그래서 ORV는 가장 단순한 요소(향, 물, 숨)로 감각을 다시 연결하는 루틴을 설계하기로 했습니다.
+            </p>
+
+            <div class="divider"></div>
+
+            <h3 class="serif" style="margin:0 0 10px;">그 경험이 철학이 되기까지</h3>
+            <p class="prose" style="margin:0;">
+              ORV의 철학은 “작고 반복 가능한 회복”입니다.
+              거창한 결심이나 완벽한 환경이 아니라,
+              <b style="color:var(--ink);">단 3분이라도 충분히</b> 몸과 마음이 ‘다시 나에게’ 돌아오는 순간을 만들고 싶었어요.
+              <br><br>
+              그래서 ORV는 향을 ‘강하게 밀어 넣는 자극’이 아니라,
+              <b style="color:var(--ink);">은은하게 머무는 잔향</b>으로 설계합니다.
+              바스 타임이 없는 날에도 샤워 스티머, 룸 스프레이, 필로우 샤쉐 같은 제품으로
+              ‘쉼의 결’을 일상 곳곳에 놓아두고자 합니다.
+            </p>
+
+            <div style="margin-top:14px;">
+              <blockquote class="quote serif">
+                “회복은 대단한 목표가 아니라, 오늘의 감각을 다시 여는 일.”
+              </blockquote>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panelPad">
+            <h3 class="serif" style="margin:0 0 10px;">ORV가 지키는 3가지</h3>
+            <div class="post" style="margin-bottom:10px;">
+              <div class="meta">01 / Brevity</div>
+              <h4 class="serif">짧아도 충분한 루틴</h4>
+              <p>하루 3분, 일주일에 2번. ‘지속 가능한 쉼’이 되도록.</p>
+            </div>
+            <div class="post" style="margin-bottom:10px;">
+              <div class="meta">02 / Balance</div>
+              <h4 class="serif">자극보다 균형</h4>
+              <p>향은 강함이 아니라 ‘좋은 잔향’으로 기억되도록.</p>
+            </div>
+            <div class="post">
+              <div class="meta">03 / Care</div>
+              <h4 class="serif">감각을 다정하게</h4>
+              <p>물, 공기, 피부—일상에서 가장 가까운 요소로 나를 돌보는 방법.</p>
+            </div>
+
+            <div style="margin-top:14px;">
+              <a class="btn" href="#products">ORV 제품 보러가기</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 상품 -->
+    <section id="products" aria-label="Products">
+      <div class="sectionHead">
+        <div>
+          <h2 class="serif">상품</h2>
+          <p>바스 & 아로마로 설계된 ORV의 데일리 리추얼 라인업.</p>
+        </div>
+      </div>
+
+      <div class="productGrid" aria-label="Product line up">
+        <div class="pItem">바스 솔트</div>
+        <div class="pItem">아로마 오일</div>
+        <div class="pItem">버블바</div>
+        <div class="pItem">샤워 스티머</div>
+        <div class="pItem">룸 스프레이</div>
+        <div class="pItem">필로우 샤쉐</div>
+        <div class="pItem">아이워머</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="grid3">
+        <article class="card">
+          <div class="cardPad">
+            <h3 class="serif">바스 솔트</h3>
+            <p>따뜻한 물에 녹아드는 순간부터, ‘하루를 마감하는 감각’이 시작됩니다.</p>
+          </div>
+        </article>
+        <article class="card">
+          <div class="cardPad">
+            <h3 class="serif">샤워 스티머</h3>
+            <p>욕조가 없어도 괜찮아요. 샤워 속에 작은 스파를 놓아두는 방식.</p>
+          </div>
+        </article>
+        <article class="card">
+          <div class="cardPad">
+            <h3 class="serif">필로우 샤쉐 & 아이워머</h3>
+            <p>잠들기 전 5분—후각과 시선을 쉬게 하면, 생각도 조용해집니다.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 매거진 -->
+    <section id="magazine" aria-label="Magazine">
+      <div class="sectionHead">
+        <div>
+          <h2 class="serif">매거진</h2>
+          <p>ORV가 생각하는 ‘쉼’에 대한 글들. 기고 형식의 짧은 에세이로 기록합니다.</p>
+        </div>
+      </div>
+
+      <div class="magGrid">
+        <div class="panel">
+          <div class="panelPad">
+            <h3 class="serif" style="margin:0 0 10px;">최신 글</h3>
+
+            <article class="post">
+              <div class="meta">ESSAY · ORV EDITORIAL</div>
+              <h4 class="serif">한 번의 쉼이 가져오는 변화</h4>
+              <p>
+                쉼은 ‘멈추는 것’이 아니라 ‘돌아오는 것’입니다.
+                우리가 자주 잊는 감각—숨의 길이, 물의 온도, 향의 잔향—을 다시 붙잡아보세요.
+                3분이면 충분합니다. 그 3분이 쌓이면, 하루의 결이 달라집니다.
+              </p>
+              <div style="margin-top:10px;">
+                <a class="miniLink" href="#ritual">관련 리추얼 보기 →</a>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panelPad">
+            <h3 class="serif" style="margin:0 0 10px;">더 읽기</h3>
+
+            <div class="magList">
+              <article class="post">
+                <div class="meta">NOTE</div>
+                <h4 class="serif">향은 ‘강함’이 아니라 ‘지속’이다</h4>
+                <p>기억에 남는 향은 큰 소리보다, 은은한 잔향에 가깝습니다.</p>
+              </article>
+
+              <article class="post">
+                <div class="meta">RITUAL</div>
+                <h4 class="serif">샤워 속 2분, 나를 정돈하는 법</h4>
+                <p>샤워 스티머와 함께 호흡을 길게 늘려보는 작은 루틴.</p>
+              </article>
+
+              <article class="post">
+                <div class="meta">CARE</div>
+                <h4 class="serif">잠들기 전, 시선을 쉬게 하기</h4>
+                <p>아이워머 + 필로우 샤쉐로 눈과 생각을 천천히 내려놓습니다.</p>
+              </article>
+            </div>
+
+            <div style="margin-top:14px;">
+              <a class="btn" href="#contact">매거진 제안/피드백 보내기</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" aria-label="Contact">
+      <div class="sectionHead">
+        <div>
+          <h2 class="serif">contact</h2>
+          <p>피드백은 ORV를 더 좋은 리추얼로 만듭니다. 편하게 남겨주세요.</p>
+        </div>
+      </div>
+
+      <div class="contactGrid">
+        <div class="panel">
+          <div class="panelPad">
+            <h3 class="serif" style="margin:0 0 10px;">피드백 report</h3>
+            <p class="prose" style="margin:0 0 12px;">
+              제품/향/사용감/패키징/리추얼 제안 등 어떤 내용이든 좋아요.
+              (실제 폼 연동은 Flask에서 POST 라우트로 연결하면 됩니다.)
+            </p>
+
+            <form action="#" method="post" style="display:grid; gap:10px;">
+              <input name="name" placeholder="이름(선택)" style="padding:12px 14px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,.7); outline:none;">
+              <input name="email" type="email" placeholder="이메일" required style="padding:12px 14px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,.7); outline:none;">
+              <textarea name="message" rows="5" placeholder="피드백 내용을 적어주세요" required
+                style="padding:12px 14px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,.7); outline:none; resize:vertical;"></textarea>
+              <button class="btn primary" type="submit">보내기</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panelPad">
+            <h3 class="serif" style="margin:0 0 10px;">채널</h3>
+
+            <!-- Email -->
+            <a class="contactRow" href="mailto:hello@orv.kr" aria-label="Email">
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 4h16v16H4z"/><path d="m4 7 8 6 8-6"/>
+                </svg>
+              </span>
+              <span>
+                <b>Email</b>
+                <span>hello@orv.kr</span>
+              </span>
+            </a>
+
+            <!-- Instagram -->
+            <a class="contactRow" href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="4" y="4" width="16" height="16" rx="5"/><path d="M16 11.37a4 4 0 1 1-7.7 1.26A4 4 0 0 1 16 11.37z"/><path d="M17.5 6.5h.01"/>
+                </svg>
+              </span>
+              <span>
+                <b>Instagram</b>
+                <span>@orv.official</span>
+              </span>
+            </a>
+
+            <!-- YouTube -->
+            <a class="contactRow" href="https://youtube.com/" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 12s0-4-1-5-5-1-9-1-8 0-9 1-1 5-1 5 0 4 1 5 5 1 9 1 8 0 9-1 1-5 1-5z"/>
+                  <path d="M10 15l5-3-5-3v6z"/>
+                </svg>
+              </span>
+              <span>
+                <b>YouTube</b>
+                <span>ORV Ritual Notes</span>
+              </span>
+            </a>
+
+            <!-- Report link (예시) -->
+            <a class="contactRow" href="#contact" aria-label="Feedback report shortcut">
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/>
+                </svg>
+              </span>
+              <span>
+                <b>Feedback Report</b>
+                <span>폼으로 의견 남기기</span>
+              </span>
+            </a>
+
+            <p class="prose" style="margin:12px 0 0;">
+              링크는 현재 예시입니다. 실제 계정/URL로 바꿔서 쓰면 됩니다.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footRow">
+        <div class="brand" style="gap:10px;">
+          <span class="brandMark" aria-hidden="true"></span>
+          <span>ORV <small>오르브 · breathe & rest</small></span>
+        </div>
+
+        <div class="footLinks">
+          <a href="/brand">브랜드</a>
+          <a href="#products">상품</a>
+          <a href="#ritual">리추얼</a>
+          <a href="#magazine">매거진</a>
+          <a href="#contact">contact</a>
+        </div>
+
+        <div style="font-size:12px;">© ORV. All rights reserved.</div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    function toggleMobileMenu(force){
+      const panel = document.getElementById('mobilePanel');
+      const isOpen = panel.style.display === 'block';
+      const next = (typeof force === 'boolean') ? force : !isOpen;
+      panel.style.display = next ? 'block' : 'none';
+    }
+
+    // 부드러운 스크롤
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const href = a.getAttribute('href');
+        if(!href || href === '#') return;
+        const el = document.querySelector(href);
+        if(!el) return;
+        e.preventDefault();
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+
